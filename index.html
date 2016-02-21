@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Phantomjs-node by amir20</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/amir20/phantomjs-node">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/amir20/phantomjs-node/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/amir20/phantomjs-node/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Phantomjs-node</h1>
+          <p>PhantomJS integration module for NodeJS</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/amir20">amir20</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="phantom---fast-nodejs-api-for-phantomjs" class="anchor" href="#phantom---fast-nodejs-api-for-phantomjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>phantom - Fast NodeJS API for PhantomJS</h1>
+
+<p><a href="https://nodei.co/npm/phantom/"><img src="https://nodei.co/npm/phantom.png?downloads=true&amp;downloadRank=true&amp;stars=true" alt="NPM"></a></p>
+
+<p><a href="https://npmjs.org/package/phantom"><img src="https://img.shields.io/npm/v/phantom.svg?style=flat-square" alt="NPM Version"></a>
+<a href="https://npmjs.org/package/phantom"><img src="https://img.shields.io/npm/dm/phantom.svg?style=flat-square" alt="NPM Downloads"></a>
+<a href="https://travis-ci.org/amir20/phantomjs-node"><img src="https://img.shields.io/travis/amir20/phantomjs-node.svg?style=flat-square" alt="Linux Build"></a>
+<a href="https://david-dm.org/amir20/phantomjs-node"><img src="https://david-dm.org/amir20/phantomjs-node.svg?style=flat-square" alt="Dependencies"></a></p>
+
+<h2>
+<a id="super-easy-to-use" class="anchor" href="#super-easy-to-use" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Super easy to use</h2>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> phantom <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>phantom<span class="pl-pds">'</span></span>);
+
+<span class="pl-smi">phantom</span>.<span class="pl-en">create</span>().<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">ph</span>) {
+  <span class="pl-smi">ph</span>.<span class="pl-en">createPage</span>().<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">page</span>) {
+    <span class="pl-smi">page</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">'</span>https://stackoverflow.com/<span class="pl-pds">'</span></span>).<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">status</span>) {
+      <span class="pl-en">console</span>.<span class="pl-c1">log</span>(status);
+      <span class="pl-smi">page</span>.<span class="pl-en">property</span>(<span class="pl-s"><span class="pl-pds">'</span>content<span class="pl-pds">'</span></span>).<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">content</span>) {
+        <span class="pl-en">console</span>.<span class="pl-c1">log</span>(content);
+        <span class="pl-smi">page</span>.<span class="pl-c1">close</span>();
+        <span class="pl-smi">ph</span>.<span class="pl-en">exit</span>();
+      });
+    });
+  });
+});</pre></div>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<div class="highlight highlight-source-shell"><pre>$ npm install phantom --save</pre></div>
+
+<h2>
+<a id="how-does-it-work" class="anchor" href="#how-does-it-work" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How does it work?</h2>
+
+<p><a href="//github.com/amir20/phantomjs-node/tree/v1">v1.0.x</a> used to use <code>dnode</code> to communicate between nodejs and phantomjs. This approach raised a lot of security restrictions and did not work well when using <code>cluster</code> or <code>pm2</code>.</p>
+
+<p>v2.0.x has been completely rewritten to use <code>sysin</code> and <code>sysout</code> pipes to communicate with the phantomjs process. It works out of the box with <code>cluster</code> and <code>pm2</code>. If you want to see the messages that are sent try adding <code>DEBUG=true</code> to your execution, ie. <code>DEBUG=true node path/to/test.js</code>. The new code is much cleaner and simpler. PhantomJS is started with <code>shim.js</code> which proxies all messages to the <code>page</code> or <code>phantom</code> object.</p>
+
+<h2>
+<a id="migrating-from-10x" class="anchor" href="#migrating-from-10x" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Migrating from 1.0.x</h2>
+
+<p>Version 2.0.x is not backward compatible with previous versions. Most notability, method calls do not take a callback function anymore. Since <code>node</code> supports <code>Promise</code>, each of the methods return a promise. Instead of writing <code>page.open(url, function(){})</code> you would have to write <code>page.open(url).then(function(){})</code>.</p>
+
+<p>The API is much more consistent now. All properties can be read with <code>page.property(key)</code> and settings can be read with <code>page.setting(key)</code>. See below for more example.</p>
+
+<h2>
+<a id="phantom-object-api" class="anchor" href="#phantom-object-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>phantom</code> object API</h2>
+
+<p>To create a new instance of <code>phantom</code> use <code>phantom.create()</code> to return a <code>Promise</code> which should resolve to a <code>phantom</code> object. If you want add parameters to the phantomjs process you can do so by doing:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> phantom <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>phantom<span class="pl-pds">'</span></span>);
+<span class="pl-smi">phnatom</span>.<span class="pl-en">create</span>([<span class="pl-s"><span class="pl-pds">'</span>--ignore-ssl-errors=yes<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span> --load-images=no<span class="pl-pds">'</span></span>]).<span class="pl-en">then</span>(<span class="pl-k">...</span>)</pre></div>
+
+<p>To create a new <code>page</code>, you have to call <code>createPage()</code>:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> phantom <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>phantom<span class="pl-pds">'</span></span>);
+<span class="pl-smi">phantom</span>.<span class="pl-en">create</span>().<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">ph</span>) {
+    <span class="pl-smi">ph</span>.<span class="pl-en">createPage</span>().<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">page</span>) {
+        <span class="pl-c">// use page</span>
+        <span class="pl-smi">ph</span>.<span class="pl-en">exit</span>();
+    });
+});</pre></div>
+
+<p>Make sure to call <code>#exit()</code> on the phantom instance to kill the phantomjs process. Otherwise, the process will never exit.</p>
+
+<h2>
+<a id="page-object-api" class="anchor" href="#page-object-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>page</code> object API</h2>
+
+<p>The <code>page</code> object that is returned with <code>createPage</code> is a proxy that sends all methods to <code>phantom</code>. Most method calls should be identical to PhantomJS API. You must remember that each method returns a <code>Promise</code>.</p>
+
+<p>Page properties can be read using the <code>#property(key)</code> method.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">page</span>.<span class="pl-en">property</span>(<span class="pl-s"><span class="pl-pds">'</span>plainText<span class="pl-pds">'</span></span>).<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">content</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(content);
+});</pre></div>
+
+<p>Page properties can be set using the <code>#property(key, value)</code> method.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">page</span>.<span class="pl-en">property</span>(<span class="pl-s"><span class="pl-pds">'</span>viewportSize<span class="pl-pds">'</span></span>, {width<span class="pl-k">:</span> <span class="pl-c1">800</span>, height<span class="pl-k">:</span> <span class="pl-c1">600</span>}).<span class="pl-en">then</span>(<span class="pl-k">function</span>() {  
+});</pre></div>
+
+<p>When setting values, using <code>then()</code> is optional. But beware that the next method to phantom will block until it is ready to accept a new message.</p>
+
+<p><code>page.settings</code> can be accessed via <code>page.setting(key)</code> or set via <code>page.setting(key, value)</code>. Here is an example to read <code>javascriptEnabled</code> property.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">page</span>.<span class="pl-en">setting</span>(<span class="pl-s"><span class="pl-pds">'</span>javascriptEnabled<span class="pl-pds">'</span></span>).<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">value</span>){
+    <span class="pl-en">expect</span>(value).<span class="pl-en">toEqual</span>(<span class="pl-c1">true</span>);
+});</pre></div>
+
+<p>You can set events using <code>property</code> because they are property members of <code>page</code>.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">page</span>.<span class="pl-en">property</span>(<span class="pl-s"><span class="pl-pds">'</span>onResourceRequested<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">requestData</span>, <span class="pl-smi">networkRequest</span>) {
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">requestData</span>.<span class="pl-smi">url</span>);
+})</pre></div>
+
+<h2>
+<a id="tests" class="anchor" href="#tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tests</h2>
+
+<p>To run the test suite, first install the dependencies, then run <code>npm test</code>:</p>
+
+<div class="highlight highlight-source-shell"><pre>$ npm install
+$ npm <span class="pl-c1">test</span></pre></div>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>This package is under development. Pull requests are welcomed. Please make sure tests are added for new functionalities and that your build does pass in TravisCI.</p>
+
+<h2>
+<a id="people" class="anchor" href="#people" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>People</h2>
+
+<p>The current lead maintainer is <a href="https://github.com/amir20">Amir Raminfar</a></p>
+
+<p><a href="https://github.com/amir20/phantomjs-node/graphs/contributors">List of all contributors</a></p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p><a href="LICENSE">ISC</a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

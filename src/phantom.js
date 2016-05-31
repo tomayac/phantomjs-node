@@ -94,9 +94,15 @@ export default class Phantom {
      * @returns {Promise.<Page>}
      */
     createPage() {
-        return this.execute('phantom', 'createPage').then(response => new Page(this, response.pageId));
+        return this.execute('phantom', 'createPage').then(response => {
+            return new Proxy(new Page(this, response.pageId), {
+                set: function (target, prop) {
+                    logger.warn(`Using page.${prop} = ...; is not supported. Use page.property('${prop}', ...) instead. See the README file for more examples of page#property.`);
+                    return false;
+                }
+            });
+        });
     }
-
 
     /**
      * Creates a special object that can be used for returning data back from PhantomJS

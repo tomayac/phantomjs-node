@@ -7,7 +7,7 @@ import Linerstream from "linerstream";
 import Page from "./page";
 import Command from "./command";
 import OutObject from "./out_object";
-import EventEmitter from 'events';
+import EventEmitter from "events";
 
 const logger = new winston.Logger({
     transports: [

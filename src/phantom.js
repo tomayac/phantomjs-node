@@ -210,6 +210,7 @@ export default class Phantom {
     exit() {
         clearInterval(this.heartBeatId);
         this.execute('phantom', 'exit');
+        this.process.kill('SIGHUP');
     }
 
     _heartBeat() {
